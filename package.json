@@ -1,0 +1,29 @@
+{
+  "name": "tty-text",
+  "version": "1.0.0",
+  "description": "获取字符串在命令行的真实长度，而不是用简单的 string.length 来得到的长度。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiu8310/tty-text.git"
+  },
+  "keywords": [
+    "tty",
+    "text",
+    "cli",
+    "words",
+    "wrap"
+  ],
+  "author": "Mora",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qiu8310/tty-text/issues"
+  },
+  "homepage": "https://github.com/qiu8310/tty-text",
+  "dependencies": {
+    "tty-size": "^1.0.0"
+  }
+}
