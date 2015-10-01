@@ -75,8 +75,13 @@ tt.text(text, function (err, len) {
 
   [更多详细介绍参考这里](https://mathiasbynens.be/notes/javascript-unicode#accounting-for-other-combining-marks)
 
+3. 东亚模糊字体 `\u2661 => ♡ `
 
+  英文里叫它 `East Asian Ambiguous Character Width`
 
+  每个终端上都可以配置 ”是否将此类字体设置成 Double 宽度“，所以此类字体在不同的终端上宽度可能也会不一样。
+
+  [可以参考](http://unicode.org/reports/tr11/)
 
 
 
