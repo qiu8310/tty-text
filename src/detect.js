@@ -40,14 +40,14 @@ function _clear(pos) {
 }
 
 
-exports.text = function (text, callback) {
+exports.detect = function (text, callback) {
   if (_check(callback)) {
     _write(dsr + text + dsr, function (str) {
-      // 匹配首尾的类似此类字符串 
+      // 匹配首尾的类似此类字符串
       var matches = str.match(/^\u001b\[\d+;\d+R|\u001b\[\d+;\d+R$/g);
 
       if (!matches) return callback(new Error('PARSE_ERROR'));
-      
+
       var pos = matches.map(_parseDSR);
       _clear(pos[0]);
       callback(null, _caculateLength(pos[0], pos[1]));
@@ -55,24 +55,24 @@ exports.text = function (text, callback) {
   }
 };
 
-exports.words = function (text, callback) {
+exports.detectEach = function (text, callback) {
   if (_check(callback)) {
 
     var codePoints = punycode.ucs2.decode(text);
-    var words = codePoints.map(function (cp) { return punycode.ucs2.encode([cp]); });
+    var chars = codePoints.map(function (cp) { return punycode.ucs2.encode([cp]); });
 
-    _write(dsr + words.join(dsr) + dsr, function (b) {
+    _write(dsr + chars.join(dsr) + dsr, function (b) {
       var matches = b.match(/\u001b\[\d+;\d+R/g);
 
-      if (!matches || matches.length !== words.length + 1) return callback(new Error('PARSE_ERROR'));
+      if (!matches || matches.length !== chars.length + 1) return callback(new Error('PARSE_ERROR'));
 
       matches = matches.map(_parseDSR);
       _clear(matches[0]);
-      callback(null, words.map(function (word, i) {
+      callback(null, chars.map(function (symbol, i) {
         return {
-          word: word,
+          symbol: symbol,
           codePoint: codePoints[i],
-          length: _caculateLength(matches[i], matches[i + 1])
+          size: _caculateLength(matches[i], matches[i + 1])
         };
       }));
     });
