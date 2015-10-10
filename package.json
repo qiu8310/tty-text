@@ -1,14 +1,8 @@
 {
   "name": "tty-text",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "获取字符串在命令行的真实长度，而不是用简单的 string.length 来得到的长度。",
   "main": "src/index.js",
-  "bin": {
-    "tty-text": "cli"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qiu8310/tty-text.git"
@@ -27,7 +21,7 @@
   },
   "homepage": "https://github.com/qiu8310/tty-text",
   "dependencies": {
-    "commander": "^2.8.1",
+    "async": "^1.4.2",
     "tty-size": "^1.0.0"
   }
 }

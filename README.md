@@ -5,18 +5,21 @@
 
 ## API
 
-* detech(text, callback)
+* detectShortText(text, callback)
 * detechEach(text, callback)
+* detectEachNumbers(numbers, callback)
 * size(textOrNumber, [ambsize])
   
-  **Not support characters whoes code point in [9, 10, 11, 12, 13].**
+**注意**
+  
+  * 不支持获取 \t, \n, \v, \f, \r 的长度，因为它们的长度不固定
+  * Windows 下部分字符的长度不准备，比如字符 `U+25CB`, `U+25C7`，在 Windows 下是 2，但在 Mac 下是 1，但它又不是模糊字体
+  * Windows 下不支持 detect 相关的方法，直接用 size 去获取缓存好的字符的长度吧
 
 
 **Other bonus**
 
 * isCombiningMarkChar(codePoint)
-* isZeroControlChar(codePoint)
-* isEastAsianWideChar(codePoint)
 * isAmbiguousEastAsianChar(codePoint)
 * isSurrogatePairsChar(codePoint)
 * codePointSize(codePoint)
@@ -37,7 +40,7 @@ var tt = require('tty-text');
 // 获取字符串在命令行上显示的长度（不支持大量的文字，如超过一整个屏幕）
 // 注意：使用前尽量 clear 下屏幕内容，因为如果不 clear，通过命令得到的当前行数总是最后一行
 //      这样很容易影响长度的计算
-tt.detect('some text', function (err, len) {
+tt.detectShortText('some text', function (err, len) {
   // ...
 });
 
@@ -64,12 +67,12 @@ var tt = require('../src/detect');
 
 var text = 'en\u0303中💩\u2661';
 
-tt.detect(text, function (err, len) {
+tt.detectShortText(text, function (err, len) {
   console.log('字符串 " %s " 的长度是 %d\n', text, len);
 
   tt.detectEach(text, function (err, chars) {
     chars.forEach(function (c) {
-      console.log('字符 " %s " 的 CodePoint 是 %d, 长度是 %d', c.symbol, c.codePoint, c.size);
+      console.log('字符 " %s " 的 CodePoint 是 %d, 长度是 %d', c.symbol, c.number, c.size);
     });
   });
 

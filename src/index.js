@@ -1,5 +1,15 @@
-var eastAsianWidth = require('../data/EAW.json');
+var sizeData = require('../data/size.json');
+var ambRange = require('../data/amb.json');
 var punycode = require('punycode');
+var cp = require('./cp');
+
+var cpRange;
+var isWin = require('os').platform() === 'win32';
+if (isWin) {
+  try {
+    cpRange = require('../data/cp' + cp() + '.json');
+  } catch (e) {};
+}
 
 var self = module.exports = require('./detect.js');
 
@@ -10,6 +20,10 @@ function _isCodePointInRanges(codePoint, ranges) {
     return codePoint >= range[0] && codePoint <= range[1];
   });
 }
+
+self.isAmbiguousEastAsianChar = function (codePoint) {
+  return _isCodePointInRanges(codePoint, ambRange);
+};
 
 // https://mathiasbynens.be/notes/javascript-unicode#accounting-for-other-combining-marks
 // https://github.com/mathiasbynens/esrever/blob/master/scripts/export-data.js
@@ -23,18 +37,6 @@ self.isCombiningMarkChar = function (codePoint) {
   ]);
 };
 
-self.isZeroControlChar = function (codePoint) {
-  return _isCodePointInRanges(codePoint, [[0, 8], [14, 31], [8204, 8205]]);
-};
-
-self.isEastAsianWideChar = function (codePoint) {
-  return _isCodePointInRanges(codePoint, eastAsianWidth.wide);
-};
-
-self.isAmbiguousEastAsianChar = function (codePoint) {
-  return _isCodePointInRanges(codePoint, eastAsianWidth.ambiguous);
-};
-
 // https://mathiasbynens.be/notes/javascript-encoding#surrogate-pairs
 self.isSurrogatePairsChar = function (codePoint) {
   return codePoint > 0xFFFF;
@@ -44,9 +46,19 @@ self.codePointSize = function (codePoint, ambsize) {
   if ([9, 10, 11, 12, 13].indexOf(codePoint) >= 0)
     throw new Error('Code point ' + codePoint+ ' not allowed.');
 
-  if (self.isZeroControlChar(codePoint) || self.isCombiningMarkChar(codePoint)) return 0;
-  if (self.isEastAsianWideChar(codePoint)) return 2;
-  if (ambsize === 2 && self.isAmbiguousEastAsianChar(codePoint)) return 2;
+  if (isWin && cpRange) {
+    if (!_isCodePointInRanges(codePoint, cpRange)) return 1; // window 对不支持的字符都使用了默认的占一个位置的字符替代
+    else if (_isCodePointInRanges(codePoint, ambRange)) return 2;
+  }
+
+  if (ambsize === 2 && _isCodePointInRanges(codePoint, ambRange)) return ambsize;
+
+  for (var size in sizeData) {
+    if (sizeData.hasOwnProperty(size) && _isCodePointInRanges(codePoint, sizeData[size])) {
+      return parseInt(size, 10);
+    }
+  }
+
   return 1;
 }
 
