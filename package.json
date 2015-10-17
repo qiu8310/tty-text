@@ -1,6 +1,6 @@
 {
   "name": "tty-text",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "获取字符串在命令行的真实长度，而不是用简单的 string.length 来得到的长度。",
   "main": "src/index.js",
   "repository": {

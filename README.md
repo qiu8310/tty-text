@@ -1,6 +1,6 @@
 # tty-text
 
-获取字符串在命令行的真实长度，而不是用简单的 string.length 来得到的长度。
+**Deprecated! Please use [tty-text-size](https://github.com/qiu8310/tty-text-size) or [tty-detect](https://github.com/qiu8310/tty-detect) to get terminal text's size.**
 
 
 ## API
